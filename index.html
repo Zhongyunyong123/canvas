@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>夜景图</title>
+      <style>
+      *{
+        padding: 0;
+        margin: 0;
+      }
+        #mycan{
+          position: absolute;
+          left: 10%;
+        }
+      </style>
+</head>
+
+<body>
+  <canvas id="mycan" width="1200" height="760"></canvas>
+
+
+</body>
+</html>
+ <script>
+  var canvas=document.getElementById("mycan");
+  var g=canvas.getContext("2d");
+  //设置背景
+  var skyStyle=g.createLinearGradient(0,0,0,canvas.height);
+        skyStyle.addColorStop(0,'black');
+        skyStyle.addColorStop(1,'#035');
+        g.fillStyle=skyStyle;
+        g.fillRect(0,0,canvas.width,canvas.height);
+      //草地
+          drawLand(g);
+    
+       //星星
+       var timer=null;
+          var f=0;
+      timer=setInterval(function(){
+      
+          for(var i=0;i<30;i++){
+       var r=Math.random()*10;//r在10-20中
+       var x=Math.random()*canvas.width;
+       var y=Math.random()*canvas.height*0.65;
+       var a=Math.random()*360;
+       drawStar(g,r/2,r,x,y,a);
+   }
+     f++;
+ 
+     if(f==3){
+      clearInterval(timer)
+     }
+
+
+
+       },1000)
+ 
+   //月亮
+   fillMoon(g,2,canvas.width*0.75,180,100,0);
+   //流星
+    g.beginPath();   
+  // g.fillStyle="white";
+  // g.fillRect(50,50,300,250); 
+
+
+
+
+  function drawStar(g,r,R,x,y,rot){ 
+    g.beginPath();       
+    for(var i=0;i<5;i++){
+       g.lineTo(Math.cos(Math.PI/180*(18+i*72-rot))*R+x,-Math.sin(Math.PI/180*(18+i*72-rot))*R+y);
+       g.lineTo(Math.cos(Math.PI/180*(54+i*72-rot))*r+x,-Math.sin(Math.PI/180*(54+i*72-rot))*r+y);
+      }   
+    g.closePath();
+    g.lineWidth=10;
+    g.fillStyle="#fb3";
+
+
+    g.fill();
+
+     }
+    
+    function fillMoon(g,d,x,y,R,rot,fillColor){
+        g.save();
+        g.translate(x,y);
+        g.rotate(rot*Math.PI/180);
+        g.scale(R,R);
+        pathMoon(g,d);
+        g.fillStyle=fillColor||"#fb5";
+        g.fill();
+        g.restore();
+    }
+    function pathMoon(g,d){
+      g.beginPath();
+      g.arc(0,0,1,0.5*Math.PI,1.5*Math.PI,true);
+      g.moveTo(0,-1);
+      g.arcTo(d,0,0,1,dis(0,-1,d,0)/d);//控制点坐标 切点坐标
+      g.closePath();
+    }
+    function dis(x1,y1,x2,y2){
+    return Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));//勾股定理
+
+   }
+
+   
+        function drawLand(g){
+ 
+           g.save();
+           g.beginPath(); 
+           g.moveTo(0,600);
+           g.bezierCurveTo(540,400,660,800,1200,600);
+           g.lineTo(1200,800);
+           g.lineTo(0,800);
+          var landStyle=g.createLinearGradient(0,0,0,canvas.height);
+        landStyle.addColorStop(0,'#030');
+        landStyle.addColorStop(1,'#580');
+        g.fillStyle=landStyle;
+        g.fill();
+           g.closePath();   
+           g.restore();
+        }
+ 
+
+   
+ </script>
